@@ -22,8 +22,6 @@ static NSString* kDialogBaseURL = @"https://m.facebook.com/dialog/";
 static NSString* kGraphBaseURL = @"https://graph.facebook.com/";
 static NSString* kRestserverBaseURL = @"https://api.facebook.com/method/";
 
-static NSString* kFBAppAuthURLScheme = @"fbauth";
-static NSString* kFBAppAuthURLPath = @"authorize";
 static NSString* kRedirectURL = @"fbconnect://success";
 
 static NSString* kLogin = @"oauth";
@@ -150,44 +148,11 @@ static NSString* kSDKVersion = @"2";
     [params setValue:_localAppId forKey:@"local_client_id"];
   }
   
-  // If the device is running a version of iOS that supports multitasking,
-  // try to obtain the access token from the Facebook app installed
-  // on the device.
-  // If the Facebook app isn't installed or it doesn't support
-  // the fbauth:// URL scheme, fall back on Safari for obtaining the access token.
-  // This minimizes the chance that the user will have to enter his or
-  // her credentials in order to authorize the application.
-  BOOL didOpenOtherApp = NO;
-  UIDevice *device = [UIDevice currentDevice];
-  if ([device respondsToSelector:@selector(isMultitaskingSupported)] && [device isMultitaskingSupported]) {
-    if (tryFBAppAuth) {
-      NSString *scheme = kFBAppAuthURLScheme;
-      if (_localAppId) {
-        scheme = [scheme stringByAppendingString:@"2"];
-      }
-      NSString *urlPrefix = [NSString stringWithFormat:@"%@://%@", scheme, kFBAppAuthURLPath];
-      NSString *fbAppUrl = [FBRequest serializeURL:urlPrefix params:params];
-      didOpenOtherApp = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:fbAppUrl]];
-    }
-
-    if (trySafariAuth && !didOpenOtherApp) {
-      NSString *nextUrl = [self getOwnBaseUrl];
-      [params setValue:nextUrl forKey:@"redirect_uri"];
-
-      NSString *fbAppUrl = [FBRequest serializeURL:loginDialogURL params:params];
-      didOpenOtherApp = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:fbAppUrl]];
-    }
-  }
-
-  // If single sign-on failed, open an inline login dialog. This will require the user to
-  // enter his or her credentials.
-  if (!didOpenOtherApp) {
-    [_loginDialog release];
-    _loginDialog = [[FBLoginDialog alloc] initWithURL:loginDialogURL
-                                          loginParams:params
-                                             delegate:self];
-    [_loginDialog show];
-  }
+  [_loginDialog release];
+  _loginDialog = [[FBLoginDialog alloc] initWithURL:loginDialogURL
+                                        loginParams:params
+                                           delegate:self];
+  [_loginDialog show];
 }
 
 /**
