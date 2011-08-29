@@ -185,10 +185,6 @@ static NSString* kSDKVersion = @"2";
  * Starts a dialog which prompts the user to log in to Facebook and grant
  * the requested permissions to the application.
  *
- * If the device supports multitasking, we use fast app switching to show
- * the dialog in the Facebook app or, if the Facebook app isn't installed,
- * in Safari (this enables single sign-on by allowing multiple apps on
- * the device to share the same user session).
  * When the user grants or denies the permissions, the app that
  * showed the dialog (the Facebook app or Safari) redirects back to
  * the calling application, passing in the URL the access token
