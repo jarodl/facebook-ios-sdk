@@ -293,7 +293,7 @@ BOOL FBIsDeviceIPad() {
 // NSObject
 
 - (id)init {
-  if (self = [super initWithFrame:CGRectZero]) {
+  if ((self = [super initWithFrame:CGRectZero])) {
     _delegate = nil;
     _loadingURL = nil;
     _orientation = UIDeviceOrientationUnknown;
@@ -596,6 +596,8 @@ BOOL FBIsDeviceIPad() {
   [window addSubview:_modalBackgroundView];
 
   [window addSubview:self];
+    
+  [self clearCookies];
 
   [self dialogWillAppear];
 
@@ -651,6 +653,17 @@ BOOL FBIsDeviceIPad() {
     [_delegate dialogDidNotCompleteWithUrl:url];
   }
   [self dismissWithSuccess:NO animated:YES];
+}
+
+#pragma mark -
+#pragma mark Clearing cookies
+
+- (void)clearCookies {
+    NSHTTPCookie *cookie;
+    NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    for (cookie in [storage cookies]) {
+        [storage deleteCookie:cookie];
+    }
 }
 
 @end

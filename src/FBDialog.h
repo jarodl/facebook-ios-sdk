@@ -116,6 +116,12 @@
  * Implementations must call dismissWithSuccess:YES at some point to hide the dialog.
  */
 - (void)dialogDidCancel:(NSURL *)url;
+
+/**
+ * Clear the cookies to allow for multiple users.
+ *
+ */
+- (void)clearCookies;
 @end
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
